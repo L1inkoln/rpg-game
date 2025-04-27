@@ -1,11 +1,16 @@
 from abc import ABC, abstractmethod
-from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from characters.base import Character
 
 
-# ===== Интерфейс предмета =====
 class InventoryItem(ABC):
+    @property
     @abstractmethod
-    def use(self, character: "Character") -> None: ...
+    def name(self) -> str: ...
+
+
+class IConsumable(InventoryItem):
+    @property
+    @abstractmethod
+    def max_stack(self) -> int: ...
+
+    @abstractmethod
+    def consume(self) -> dict: ...
