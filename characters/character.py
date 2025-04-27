@@ -107,3 +107,32 @@ class Character(ICharacter):
             self._abilities[index].use(self, target)
         else:
             print(f"Способность #{index} не найдена!")
+
+    # Статистика
+    def show_status(self) -> None:
+        """Выводит основную информацию о персонаже"""
+        print(f"\n=== Статус {self.name} ===")
+        print(f"Здоровье: {self._health}/{self.MAX_HEALTH}")
+        print(
+            f"Сила: {self._stats.strength} Ловкость: {self._stats.agility} Интеллект: {self._stats.intelligence}"
+        )
+
+        # Информация об оружии
+        if self._weapon:
+            print(f"Оружие: {self._weapon.name} (Урон: {self._weapon.damage})")
+        else:
+            print("Оружие: нет")
+
+        # Информация о расходниках
+        print("\nИнвентарь:")
+        if not self._consumables:
+            print("  Пусто")
+        else:
+            for item_type, items in self._consumables.items():
+                print(f"  {item_type.__name__}: {len(items)} шт.")
+
+        # Активные баффы
+        if self._active_buffs:
+            print("\nАктивные эффекты:")
+            for buff, value in self._active_buffs.items():
+                print(f"  {buff}: +{value}")
