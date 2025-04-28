@@ -1,8 +1,10 @@
 from __future__ import annotations
+import random
 from typing import Dict, List, Type
 from abilities.base import IAbility
 from characters.base import ICharacter, Stats
 from items.base import IConsumable
+from levels.level import IEnemy
 
 
 class Character(ICharacter):
@@ -50,7 +52,7 @@ class Character(ICharacter):
         print(f"{self.name} экипировал {weapon.name}!")
         return True
 
-    def attack(self, target: ICharacter) -> None:
+    def attack(self, target: ICharacter | IEnemy) -> None:
         damage = self._calculate_damage()
         if self._weapon:
             print(
@@ -107,6 +109,18 @@ class Character(ICharacter):
             self._abilities[index].use(self, target)
         else:
             print(f"Способность #{index} не найдена!")
+
+    def use_random_ability(self, target: ICharacter) -> None:
+        if not self._abilities:
+            self.attack(target)
+            return
+
+        ability = random.choice(self._abilities)
+        ability.use(self, target)
+
+    @property
+    def abilities(self) -> List[IAbility]:
+        return self._abilities
 
     # Статистика
     def show_status(self) -> None:
