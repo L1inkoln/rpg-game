@@ -25,5 +25,5 @@ class DungeonLevel(Level):
         print("\n🎁 Награды за победу:")
         for hero in heroes:
             if hasattr(hero, "add_consumable"):
-                hero.add_consumable(HealthPotion())
+                hero._add_consumable(HealthPotion())
                 print(f"{hero.name} получил Зелье здоровья!")

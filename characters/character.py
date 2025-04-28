@@ -71,7 +71,7 @@ class Character(ICharacter):
         return base_damage + weapon_damage + buff_damage
 
     # Система предметов
-    def add_consumable(self, item: IConsumable) -> None:
+    def _add_consumable(self, item: IConsumable) -> None:
         item_type = type(item)
         if item_type not in self._consumables:
             self._consumables[item_type] = []
@@ -97,7 +97,11 @@ class Character(ICharacter):
             print(f"Урон увеличен на {effects['damage_buff']} на 3 хода!")
 
     def get_consumable_count(self, item_type: Type[IConsumable]) -> int:
-        return len(self._consumables.get(item_type, []))
+        count = 0
+        for stored_type, items in self._consumables.items():
+            if issubclass(stored_type, item_type):
+                count += len(items)
+        return count
 
     # Система способностей
     def add_ability(self, ability: IAbility) -> None:
@@ -133,7 +137,9 @@ class Character(ICharacter):
 
         # Информация об оружии
         if self._weapon:
-            print(f"Оружие: {self._weapon.name} (Урон: {self._weapon.damage})")
+            print(
+                f"Выбранное оружие: {self._weapon.name} (Урон: {self._weapon.damage})"
+            )
         else:
             print("Оружие: нет")
 
@@ -150,3 +156,4 @@ class Character(ICharacter):
             print("\nАктивные эффекты:")
             for buff, value in self._active_buffs.items():
                 print(f"  {buff}: +{value}")
+        print("\n")

@@ -15,6 +15,7 @@ class HealthPotion(IConsumable):
         return self._max_stack
 
     def consume(self) -> dict:
+        print(f"использовано {self.name}")
         return {"heal": self._heal_amount}
 
 

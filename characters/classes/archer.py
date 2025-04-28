@@ -20,7 +20,7 @@ class Archer(Character):
 
         arrow = self._get_arrow(arrow_type)
         if arrow is None:
-            print("Нет подходящих стрел!")
+            print("Нет стрел в инвентаре!")
             self.attack(target)
             return
 

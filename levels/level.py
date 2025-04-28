@@ -147,11 +147,18 @@ class Battle:
 
         self.logger.print_summary()
 
-    def character_action(self, character: Union[ICharacter, IEnemy]) -> None:
+    def character_action(self, character: ICharacter | IEnemy) -> None:
         target_list = self.enemies if character in self.heroes else self.heroes
         target = self.choose_target(target_list)
         if target:
-            if hasattr(character, "use_random_ability") and character.abilities:
+            # 20% шанс использовать способность, если она есть
+            use_ability = (
+                hasattr(character, "abilities")
+                and character.abilities
+                and random.random() < 0.2
+            )
+
+            if use_ability:
                 ability = random.choice(character.abilities)
                 self.logger.log_action(character.name, target.name, ability.name)
                 ability.use(character, target)
@@ -160,7 +167,7 @@ class Battle:
                 character.attack(target)
 
     def choose_target(
-        self, targets: Sequence[Union[ICharacter, IEnemy]]
+        self, targets: Sequence[ICharacter | IEnemy]
     ) -> Union[ICharacter, IEnemy, None]:
         alive = [t for t in targets if t.health > 0]
         return random.choice(alive) if alive else None
