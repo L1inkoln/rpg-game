@@ -1,7 +1,7 @@
 from __future__ import annotations
 from abc import ABC, abstractmethod
 from dataclasses import dataclass
-from typing import Type, TYPE_CHECKING
+from typing import List, Type, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from items.base import IConsumable
@@ -35,7 +35,7 @@ class ICharacter(ABC):
     def heal(self, amount: int) -> None: ...
 
     @abstractmethod
-    def attack(self, target: ICharacter) -> None: ...
+    def attack(self, target) -> None: ...
 
     @abstractmethod
     def equip_weapon(self, weapon) -> bool: ...
@@ -56,3 +56,7 @@ class ICharacter(ABC):
 
     @abstractmethod
     def use_ability(self, index: int, target: ICharacter) -> None: ...
+
+    @property
+    @abstractmethod
+    def abilities(self) -> List[IAbility]: ...
