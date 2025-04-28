@@ -26,9 +26,20 @@ class DoubleShot(IAbility):
             print(f"{caster.name} не может стрелять!")
             return
 
-        print(f"{caster.name} использует {self.name}:")
-        caster.shoot(target)  # type: ignore  # Игнорируем проверку для специализированных классов
+        print(f"\n╔{'═' * (len(caster.name) + len(self.name) + 12)}╗")
+        print(f"║ {caster.name} использует {self.name}! ║")
+        print(f"╚{'═' * (len(caster.name) + len(self.name) + 12)}╝")
+
+        # Первый выстрел
+        print("\n▶ Первый выстрел:")
         caster.shoot(target)  # type: ignore
+        # Разделитель
+        print("\n﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌")
+        # Второй выстрел
+        print("▶ Второй выстрел:")
+        caster.shoot(target)  # type: ignore
+        # Итоговый разделитель
+        print("\n" + "▁" * 40)
 
 
 class Heal(IAbility):
