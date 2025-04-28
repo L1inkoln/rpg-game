@@ -1,8 +1,12 @@
 from abilities.base import IAbility
 from typing import TYPE_CHECKING
 
+from items.arrows import Arrow
+
 if TYPE_CHECKING:
     from characters.base import ICharacter
+    from items.arrows import Arrow
+    from abilities.base import IAbility
 
 
 class PowerStrike(IAbility):
@@ -26,20 +30,28 @@ class DoubleShot(IAbility):
             print(f"{caster.name} не может стрелять!")
             return
 
-        print(f"\n╔{'═' * (len(caster.name) + len(self.name) + 12)}╗")
-        print(f"║ {caster.name} использует {self.name}! ║")
-        print(f"╚{'═' * (len(caster.name) + len(self.name) + 12)}╝")
+        # Использование способности если есть две стрелы
+        if caster.get_consumable_count(Arrow) >= 2:
 
-        # Первый выстрел
-        print("\n▶ Первый выстрел:")
-        caster.shoot(target)  # type: ignore
-        # Разделитель
-        print("\n﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌")
-        # Второй выстрел
-        print("▶ Второй выстрел:")
-        caster.shoot(target)  # type: ignore
-        # Итоговый разделитель
-        print("\n" + "▁" * 40)
+            # Красивый вывод об использовании способности
+            message = f"{caster.name} использует {self.name}!"
+            width = len(message) + 2
+            print("\n" + "╔" + "═" * width + "╗")
+            print("║ " + message + " ║")
+            print("╚" + "═" * width + "╝")
+
+            print("\n▶ Первый выстрел:")
+            caster.shoot(target)  # type: ignore
+            print("\n﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌")
+            print("▶ Второй выстрел:")
+            caster.shoot(target)  # type: ignore
+            # Итоговый разделитель
+            print("▁" * 40)
+        else:
+            print(
+                f"Сработала способность '{self.name}', но нехватает стрел. Используется обычная атка"
+            )
+            caster.shoot(target)  # type: ignore
 
 
 class Heal(IAbility):
