@@ -1,5 +1,6 @@
 from characters.base import ICharacter
 from items.base import IConsumable
+from levels.level import IEnemy
 
 
 class Arrow(IConsumable):
@@ -23,7 +24,7 @@ class Arrow(IConsumable):
     def consume(self) -> dict:
         return {"damage": self._damage}
 
-    def apply_effect(self, target: "ICharacter") -> None:
+    def apply_effect(self, target: ICharacter | IEnemy) -> None:
         pass
 
 
@@ -31,7 +32,7 @@ class FrostArrow(Arrow):
     def __init__(self):
         super().__init__(name="Ледяная стрела", damage=10)
 
-    def apply_effect(self, target: "ICharacter") -> None:
+    def apply_effect(self, target) -> None:
         print(f"{target.name} замедлен!")
 
 
@@ -39,6 +40,6 @@ class FireArrow(Arrow):
     def __init__(self):
         super().__init__(name="Огненная стрела", damage=10)
 
-    def apply_effect(self, target: "ICharacter") -> None:
+    def apply_effect(self, target) -> None:
         print(f"{target.name} горит и получает доп. урон!")
         target.take_damage(5)  # Доп урон от горения

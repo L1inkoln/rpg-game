@@ -1,5 +1,5 @@
-from characters.base import ICharacter
 from typing import Sequence
+from characters.base import ICharacter
 from items.potions import HealthPotion
 from levels.level import Battle, Level, Skeleton
 
@@ -11,7 +11,9 @@ class DungeonLevel(Level):
         super().__init__(name="Подземелье", enemies=enemies)
 
     def start(self, heroes: Sequence[ICharacter]) -> None:
-        print(f"🏰 Вы входите в '{self.name}'...")
+        print(
+            f"🏰 В '{self.name}' зашли: {', '.join(hero.name for hero in heroes)} ..."
+        )
         print(f"🧟 На пути встают {len(self.enemies)} врагов!\n")
 
         battle = Battle(heroes, self.enemies)
@@ -24,6 +26,5 @@ class DungeonLevel(Level):
     def reward(self, heroes: Sequence[ICharacter]) -> None:
         print("\n🎁 Награды за победу:")
         for hero in heroes:
-            if hasattr(hero, "add_consumable"):
+            if hasattr(hero, "_add_consumable"):
                 hero._add_consumable(HealthPotion())
-                print(f"{hero.name} получил Зелье здоровья!")
