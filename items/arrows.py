@@ -1,13 +1,14 @@
 from characters.base import ICharacter
 from items.base import IConsumable
-from levels.level import IEnemy
+from levels.base import IEnemy
 
 
+# ---Базовая стрела---
 class Arrow(IConsumable):
-    def __init__(self, name: str, damage: int = 5):
+    def __init__(self, name: str = "Стрела", damage: int = 5):
         self._name = name
         self._damage = damage
-        self._max_stack = 30
+        self._max_stack = 10
 
     @property
     def name(self) -> str:

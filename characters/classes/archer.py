@@ -9,7 +9,7 @@ from levels.level import IEnemy
 class Archer(Character):
     def __init__(self, name: str):
         self.MAX_HEALTH = 70
-        super().__init__(name, Stats(strength=12, agility=18, intelligence=10))
+        super().__init__(name, Stats(strength=10, agility=18, intelligence=10))
 
     def attack(
         self, target: ICharacter | IEnemy, arrow_type: Optional[Type[Arrow]] = None

@@ -20,7 +20,7 @@ class HealthPotion(IConsumable):
 
 
 class DamagePotion(IConsumable):
-    def __init__(self, damage_buff: int = 5):
+    def __init__(self, damage_buff: int = 15):
         self._damage_buff = damage_buff
         self._max_stack = 5
 

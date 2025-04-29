@@ -5,7 +5,7 @@ from abilities.base import IAbility
 from characters.base import ICharacter, Stats
 from items.base import IConsumable
 from items.weapons import Knife, Weapon
-from levels.level import IEnemy
+from levels.base import IEnemy
 
 
 class Character(ICharacter):
@@ -23,7 +23,7 @@ class Character(ICharacter):
     # Базовые свойства
     @property
     def name(self) -> str:
-        return self._name
+        return f"{'\033[92m'}{self._name}{'\033[0m'}"
 
     @property
     def health(self) -> int:
@@ -55,9 +55,17 @@ class Character(ICharacter):
 
     def attack(self, target: ICharacter | IEnemy) -> None:
         damage = self._calculate_damage()
-        if isinstance(self._weapon, Knife):
-            print(f"{self.name} быстро ударил ножом (Урон: {damage})")
+        if isinstance(self._weapon, Weapon):
+            print(
+                f"{self.name} взял {self._weapon.name} и атаковал {target.name}  (Урон: {damage})"
+            )
             target.take_damage(damage)
+            return
+
+        if isinstance(self._weapon, Knife):
+            print(f"{self.name} быстро ударил {target.name} ножом (Урон: {damage})")
+            target.take_damage(damage)
+            return
 
         else:
             print(f"{self.name} атакует кулаками! (Урон: {damage})")
@@ -78,7 +86,7 @@ class Character(ICharacter):
 
         if len(self._consumables[item_type]) < item.max_stack:
             self._consumables[item_type].append(item)
-            print(f"{self.name}у добавлен предмет: {item.name}")
+            print(f"{self.name} получил предмет: {item.name}")
         else:
             print(f"Нельзя носить больше {item.max_stack} {item.name}!")
 

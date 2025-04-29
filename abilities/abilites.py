@@ -1,10 +1,8 @@
 from abilities.base import IAbility
 from typing import TYPE_CHECKING, Union
-
-from characters.character import Character
 from items.arrows import Arrow
 from items.weapons import Bow
-from levels.level import IEnemy
+from levels.base import IEnemy
 
 if TYPE_CHECKING:
     from characters.base import ICharacter
@@ -17,8 +15,8 @@ class PowerStrike(IAbility):
     def name(self) -> str:
         return "Мощный удар"
 
-    def use(self, caster: "ICharacter", target: "ICharacter") -> None:
-        damage = caster.stats.strength + 10
+    def use(self, caster, target) -> None:
+        damage = caster._calculate_damage() + 10
         print(f"{caster.name} использует {self.name} и наносит {damage} урона!")
         target.take_damage(damage)
 
@@ -28,7 +26,7 @@ class DoubleShot(IAbility):
     def name(self) -> str:
         return "Двойной выстрел"
 
-    def use(self, caster: Character, target: Character) -> None:
+    def use(self, caster, target) -> None:
         if not isinstance(caster._weapon, Bow):  # Проверка наличия метода
             print(f"{caster.name} не может применить способность без лука!")
             caster.attack(target)
@@ -38,18 +36,12 @@ class DoubleShot(IAbility):
         if caster.get_consumable_count(Arrow) >= 2:
 
             # Красивый вывод об использовании способности
-            message = f"{caster.name} использует {self.name}!"
-            width = len(message) + 2
-            print("\n" + "╔" + "═" * width + "╗")
-            print("║ " + message + " ║")
-            print("╚" + "═" * width + "╝")
-
+            print(f"{caster.name} использует {self.name}!")
             print("\n▶ Первый выстрел:")
             caster.attack(target)
             print("\n﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌")
             print("▶ Второй выстрел:")
             caster.attack(target)
-            # Итоговый разделитель
             print("▁" * 40)
         else:
             print(
@@ -58,21 +50,10 @@ class DoubleShot(IAbility):
             caster.attack(target)
 
 
-# class Heal(IAbility):
-#     @property
-#     def name(self) -> str:
-#         return "Лечение"
-
-#     def use(self, caster: "ICharacter", target: "ICharacter") -> None:
-#         heal_amount = 25
-#         print(f"{caster.name} исцеляет {target.name} на {heal_amount} HP!")
-#         target.heal(heal_amount)  # Теперь heal доступен
-
-
 class Fireball(IAbility):
     @property
-    def name(self) -> str:
-        return "Огненный шар"
+    def name(self):
+        return f"{'\033[38;5;208m'}Огненный шар{'\033[0m'}"
 
     def use(self, caster: "ICharacter", target: Union["ICharacter", "IEnemy"]) -> None:
         damage = caster.stats.intelligence * 2

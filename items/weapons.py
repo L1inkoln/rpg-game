@@ -8,7 +8,7 @@ class Weapon(InventoryItem):
 
     @property
     def name(self) -> str:
-        return self._name
+        return f"{'\033[34m'}{self._name}{'\033[0m'}"
 
     @property
     def damage(self) -> int:
@@ -37,3 +37,12 @@ class Staff(Weapon):
 class Dagger(Knife):
     def __init__(self):
         super().__init__(name="Кинжал", damage=6)
+
+
+class LordSword(Weapon):
+    def __init__(self):
+        super().__init__(name="Меч лорда", damage=30)
+
+    @property
+    def name(self) -> str:
+        return f"{'\033[35m'}{self._name}{'\033[0m'}"
