@@ -2,26 +2,27 @@ from characters.base import ICharacter, Stats
 from characters.character import Character
 from typing import Optional, Type, cast
 from items.arrows import Arrow
-from items.base import IConsumable
-from items.weapons import Bow
+from items.weapons import Bow, Knife, Weapon
+from levels.level import IEnemy
 
 
 class Archer(Character):
     def __init__(self, name: str):
+        self.MAX_HEALTH = 70
         super().__init__(name, Stats(strength=12, agility=18, intelligence=10))
 
-    def shoot(
-        self, target: ICharacter, arrow_type: Optional[Type[Arrow]] = None
+    def attack(
+        self, target: ICharacter | IEnemy, arrow_type: Optional[Type[Arrow]] = None
     ) -> None:
         if not isinstance(self._weapon, Bow):
             print(f"{self.name} не может стрелять без лука!")
-            self.attack(target)
+            super().attack(target)
             return
 
         arrow = self._get_arrow(arrow_type)
         if arrow is None:
             print("Нет стрел в инвентаре!")
-            self.attack(target)
+            super().attack(target)
             return
 
         damage = self._calculate_arrow_damage(arrow)
@@ -47,12 +48,7 @@ class Archer(Character):
         return None
 
     def _calculate_arrow_damage(self, arrow: Arrow) -> int:
-        return (
-            arrow.damage
-            + (self._stats.agility // 3)
-            + (self._weapon.damage if self._weapon else 0)
-        )
+        return arrow.damage + (self._weapon.damage if self._weapon else 0)
 
-    def get_consumable_count(self, item_type: Type[IConsumable]) -> int:
-        """Переопределяем для правильной типизации"""
-        return super().get_consumable_count(item_type)
+    def can_equip_weapon(self, weapon: Weapon) -> bool:
+        return isinstance(weapon, Bow | Knife)

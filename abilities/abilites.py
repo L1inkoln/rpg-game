@@ -1,7 +1,10 @@
 from abilities.base import IAbility
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Union
 
+from characters.character import Character
 from items.arrows import Arrow
+from items.weapons import Bow
+from levels.level import IEnemy
 
 if TYPE_CHECKING:
     from characters.base import ICharacter
@@ -25,9 +28,10 @@ class DoubleShot(IAbility):
     def name(self) -> str:
         return "Двойной выстрел"
 
-    def use(self, caster: "ICharacter", target: "ICharacter") -> None:
-        if not hasattr(caster, "shoot"):  # Проверка наличия метода
-            print(f"{caster.name} не может стрелять!")
+    def use(self, caster: Character, target: Character) -> None:
+        if not isinstance(caster._weapon, Bow):  # Проверка наличия метода
+            print(f"{caster.name} не может применить способность без лука!")
+            caster.attack(target)
             return
 
         # Использование способности если есть две стрелы
@@ -41,25 +45,36 @@ class DoubleShot(IAbility):
             print("╚" + "═" * width + "╝")
 
             print("\n▶ Первый выстрел:")
-            caster.shoot(target)  # type: ignore
+            caster.attack(target)
             print("\n﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌﹌")
             print("▶ Второй выстрел:")
-            caster.shoot(target)  # type: ignore
+            caster.attack(target)
             # Итоговый разделитель
             print("▁" * 40)
         else:
             print(
                 f"Сработала способность '{self.name}', но нехватает стрел. Используется обычная атка"
             )
-            caster.shoot(target)  # type: ignore
+            caster.attack(target)
 
 
-class Heal(IAbility):
+# class Heal(IAbility):
+#     @property
+#     def name(self) -> str:
+#         return "Лечение"
+
+#     def use(self, caster: "ICharacter", target: "ICharacter") -> None:
+#         heal_amount = 25
+#         print(f"{caster.name} исцеляет {target.name} на {heal_amount} HP!")
+#         target.heal(heal_amount)  # Теперь heal доступен
+
+
+class Fireball(IAbility):
     @property
     def name(self) -> str:
-        return "Лечение"
+        return "Огненный шар"
 
-    def use(self, caster: "ICharacter", target: "ICharacter") -> None:
-        heal_amount = 25
-        print(f"{caster.name} исцеляет {target.name} на {heal_amount} HP!")
-        target.heal(heal_amount)  # Теперь heal доступен
+    def use(self, caster: "ICharacter", target: Union["ICharacter", "IEnemy"]) -> None:
+        damage = caster.stats.intelligence * 2
+        print(f"{caster.name} использует {self.name} и наносит {damage} урона!")
+        target.take_damage(damage)

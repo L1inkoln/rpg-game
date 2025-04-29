@@ -4,6 +4,7 @@ from typing import Dict, List, Type
 from abilities.base import IAbility
 from characters.base import ICharacter, Stats
 from items.base import IConsumable
+from items.weapons import Knife, Weapon
 from levels.level import IEnemy
 
 
@@ -14,7 +15,7 @@ class Character(ICharacter):
         self._name = name
         self._stats = stats
         self._health = self.MAX_HEALTH
-        self._weapon = None
+        self._weapon: Weapon = None  # type: ignore
         self._consumables: Dict[Type[IConsumable], List[IConsumable]] = {}
         self._abilities: List[IAbility] = []
         self._active_buffs: Dict[str, int] = {}
@@ -40,25 +41,24 @@ class Character(ICharacter):
             print(f"{self.name} убит!")
 
     def heal(self, amount: int) -> None:
-        self._health = min(self.MAX_HEALTH, self._health + amount)
+        self._health = self._health + amount
         print(f"{self.name} восстановил {amount} HP!")
 
-    def equip_weapon(self, weapon) -> bool:
-        if not weapon.can_equip(self):
+    def equip_weapon(self, weapon: Weapon) -> None:
+        """Экипировать оружие"""
+        if not self.can_equip_weapon(weapon):
             print(f"{self.name} не может использовать {weapon.name}!")
-            return False
+            return
 
         self._weapon = weapon
         print(f"{self.name} экипировал {weapon.name}!")
-        return True
 
     def attack(self, target: ICharacter | IEnemy) -> None:
         damage = self._calculate_damage()
-        if self._weapon:
-            print(
-                f"{self.name} атакует {target.name} {self._weapon.name}! (Урон: {damage})"
-            )
-            self._weapon.apply_damage(target, damage)
+        if isinstance(self._weapon, Knife):
+            print(f"{self.name} быстро ударил ножом (Урон: {damage})")
+            target.take_damage(damage)
+
         else:
             print(f"{self.name} атакует кулаками! (Урон: {damage})")
             target.take_damage(damage)
@@ -78,7 +78,7 @@ class Character(ICharacter):
 
         if len(self._consumables[item_type]) < item.max_stack:
             self._consumables[item_type].append(item)
-            print(f"Добавлен предмет: {item.name}")
+            print(f"{self.name}у добавлен предмет: {item.name}")
         else:
             print(f"Нельзя носить больше {item.max_stack} {item.name}!")
 
@@ -104,11 +104,11 @@ class Character(ICharacter):
         return count
 
     # Система способностей
-    def add_ability(self, ability: IAbility) -> None:
+    def _add_ability(self, ability: IAbility) -> None:
         self._abilities.append(ability)
-        print(f"Добавлена способность: {ability.name}")
+        print(f"{self.name} получил способность: {ability.name}")
 
-    def use_ability(self, index: int, target: ICharacter) -> None:
+    def use_ability(self, index: int, target: ICharacter | IEnemy) -> None:
         if 0 <= index < len(self._abilities):
             self._abilities[index].use(self, target)
         else:
