@@ -11,9 +11,7 @@ class DungeonLevel(Level):
         super().__init__(name="Подземелье", enemies=enemies)
 
     def start(self, heroes: Sequence[ICharacter]) -> None:
-        print(
-            f"🏰 В '{self.name}' зашли: {', '.join(hero.name for hero in heroes)} ..."
-        )
+        print(f"В '{self.name}' зашли: {', '.join(hero.name for hero in heroes)} ...")
         print(f"🧟 На пути встают {len(self.enemies)} врагов!\n")
 
         battle = Battle(heroes, self.enemies)

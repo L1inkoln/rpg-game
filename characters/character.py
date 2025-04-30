@@ -1,6 +1,6 @@
 from __future__ import annotations
 import random
-from typing import Dict, List, Type
+from typing import Dict, List, Type, Union
 from abilities.base import IAbility
 from characters.base import ICharacter, Stats
 from items.base import IConsumable
@@ -14,7 +14,7 @@ class Character(ICharacter):
     def __init__(self, name: str, stats: Stats):
         self._name = name
         self._stats = stats
-        self._health = self.MAX_HEALTH
+        self._health: int = self.MAX_HEALTH
         self._weapon: Weapon = None  # type: ignore
         self._consumables: Dict[Type[IConsumable], List[IConsumable]] = {}
         self._abilities: List[IAbility] = []
@@ -116,11 +116,28 @@ class Character(ICharacter):
         self._abilities.append(ability)
         print(f"{self.name} получил способность: {ability.name}")
 
-    def use_ability(self, index: int, target: ICharacter | IEnemy) -> None:
-        if 0 <= index < len(self._abilities):
-            self._abilities[index].use(self, target)
+    def use_ability(
+        self, ability: Union[IAbility, type], target: ICharacter | IEnemy
+    ) -> None:
+        # Если передается класс способности (тип)
+        if isinstance(ability, type):
+            ability_instance = next(
+                (a for a in self._abilities if isinstance(a, ability)), None
+            )
+            if ability_instance:
+                ability_instance.use(self, target)
+            else:
+                print(f"Способность {ability.__name__} не найдена!")
+        # Если передается экземпляр способности
         else:
-            print(f"Способность #{index} не найдена!")
+            # Проверяем есть ли способность такого типа в списке
+            ability_instance = next(
+                (a for a in self._abilities if isinstance(a, ability.__class__)), None
+            )
+            if ability_instance:
+                ability_instance.use(self, target)
+            else:
+                print(f"Способность {ability.name} не найдена!")
 
     def use_random_ability(self, target: ICharacter) -> None:
         if not self._abilities:
@@ -135,6 +152,7 @@ class Character(ICharacter):
         return self._abilities
 
     # Статистика
+
     def show_status(self) -> None:
         """Выводит основную информацию о персонаже"""
         print(f"\n=== Статус {self.name} ===")
@@ -150,6 +168,14 @@ class Character(ICharacter):
             )
         else:
             print("Оружие: нет")
+
+        # Информация о способностях
+        print("\nСпособности:")
+        if not self._abilities:
+            print("  Нет доступных способностей")
+        else:
+            for i, ability in enumerate(self._abilities, 1):
+                print(f"  {i}. {ability.name}")
 
         # Информация о расходниках
         print("\nИнвентарь:")
