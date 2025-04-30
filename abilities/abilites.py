@@ -27,7 +27,7 @@ class DoubleShot(IAbility):
         return "Двойной выстрел"
 
     def use(self, caster, target) -> None:
-        if not isinstance(caster._weapon, Bow):  # Проверка наличия метода
+        if not isinstance(caster._weapon, Bow):  # Проверка наличия лука
             print(f"{caster.name} не может применить способность без лука!")
             caster.attack(target)
             return
@@ -45,7 +45,7 @@ class DoubleShot(IAbility):
             print("▁" * 40)
         else:
             print(
-                f"Сработала способность '{self.name}', но нехватает стрел. Используется обычная атка"
+                f"{caster.name} использует '{self.name}', но нехватает стрел. Используется обычная атка"
             )
             caster.attack(target)
 

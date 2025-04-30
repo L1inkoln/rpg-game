@@ -21,7 +21,7 @@ class Archer(Character):
 
         arrow = self._get_arrow(arrow_type)
         if arrow is None:
-            print("Нет стрел в инвентаре!")
+            print("Нет выбранной стрелы в инвентаре!")
             super().attack(target)
             return
 
