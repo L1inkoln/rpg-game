@@ -39,6 +39,7 @@ class Dagger(Knife):
         super().__init__(name="Кинжал", damage=6)
 
 
+# ---Уникальное оружия для босса---
 class LordSword(Weapon):
     def __init__(self):
         super().__init__(name="Меч лорда", damage=30)
