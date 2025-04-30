@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import random
 import re
 from typing import Sequence, Union
-from abilities.abilites import Fireball
+from abilities.abilities import Fireball
 from characters.base import ICharacter, Stats
 from items.weapons import LordSword
 from levels.base import IEnemy
