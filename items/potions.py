@@ -33,4 +33,5 @@ class DamagePotion(IConsumable):
         return self._max_stack
 
     def consume(self) -> dict:
+        print(f"использовано {self.name}")
         return {"damage_buff": self._damage_buff}

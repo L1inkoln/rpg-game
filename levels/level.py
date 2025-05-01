@@ -85,10 +85,9 @@ class Skeleton(IEnemy):
 class DarkLord(IEnemy):
 
     def __init__(self):
-        self._stats = Stats(strength=50, agility=30, intelligence=40)
+        self._stats = Stats(strength=50, agility=30, intelligence=50)
         self._name = "Темный Лорд"
-        self._health = 200
-        self._damage = 20
+        self._health = 400
         self._abilities = [Fireball()]
         self._weapon = LordSword()
 
@@ -106,11 +105,11 @@ class DarkLord(IEnemy):
 
     def attack(self, target: ICharacter) -> None:
         weapon_damage = self._weapon.damage if self._weapon else 0
-        damage = self._stats.strength // 2 + weapon_damage
+        damage = (self._stats.strength // 2) + weapon_damage
         print(
             f"{self.name} взял {self._weapon.name} и аткаовал {target.name}{'\033[92m'}а!{'\033[0m'}  (Урон: {damage})"
         )
-        target.take_damage(self._damage)
+        target.take_damage(damage)
 
     def take_damage(self, damage: int) -> None:
         self._health = max(0, self._health - damage)
@@ -184,11 +183,11 @@ class Battle:
         target_list = self.enemies if character in self.heroes else self.heroes
         target = self.choose_target(target_list)
         if target:
-            # 20% шанс использовать способность, если она есть
+            # 33% шанс использовать способность, если она есть
             use_ability = (
                 hasattr(character, "abilities")
                 and character.abilities
-                and random.random() < 0.8
+                and random.random() < 0.33
             )
 
             if use_ability:

@@ -102,7 +102,9 @@ class Character(ICharacter):
             self.heal(effects["heal"])
         if "damage_buff" in effects:
             self._active_buffs["damage"] = effects["damage_buff"]
-            print(f"Урон увеличен на {effects['damage_buff']} на 3 хода!")
+            print(
+                f"{self.name} увеличил урон на {effects['damage_buff']} до конца уровня!"
+            )
 
     def get_consumable_count(self, item_type: Type[IConsumable]) -> int:
         count = 0
@@ -153,7 +155,7 @@ class Character(ICharacter):
 
     # Статистика
 
-    def show_status(self) -> None:
+    def show_status(self):
         """Выводит основную информацию о персонаже"""
         print(f"\n=== Статус {self.name} ===")
         print(f"Здоровье: {self._health}/{self.MAX_HEALTH}")
@@ -182,8 +184,8 @@ class Character(ICharacter):
         if not self._consumables:
             print("  Пусто")
         else:
-            for item_type, items in self._consumables.items():
-                print(f"  {item_type.__name__}: {len(items)} шт.")
+            for item, items in self._consumables.items():
+                print(f"  {item.__name__}: {len(items)} шт.")
 
         # Активные баффы
         if self._active_buffs:

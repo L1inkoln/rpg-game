@@ -57,3 +57,6 @@ class ICharacter(ABC):
     @property
     @abstractmethod
     def abilities(self) -> List[IAbility]: ...
+
+    @abstractmethod
+    def show_status(self): ...
